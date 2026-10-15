@@ -40,7 +40,10 @@ export default function ChatComponent({ hubConnection, onConnected }: ChatCompon
       setChannelsList(channels);
     })
     // TODO: Écouter le message pour quitter un channel (lorsque le channel est effacé)
-
+    hubConnection.on('LeaveChannel', () => {
+      setSelectedChannel(null);
+      setMessages(prev => [...prev, "Le canal a été supprimé, vous l'avez quitté."]);
+    });
     // Tous les handlers sont enregistrés : on peut maintenant démarrer la connexion.
     if (hubConnection.state === HubConnectionState.Disconnected) {
       hubConnection
@@ -56,6 +59,7 @@ export default function ChatComponent({ hubConnection, onConnected }: ChatCompon
       hubConnection.off('UsersList');
       hubConnection.off('NewMessage');
       hubConnection.off('ChannelsList');
+      hubConnection.off('LeaveChannel');
     };
   }, [hubConnection, onConnected]);
 
@@ -93,6 +97,7 @@ export default function ChatComponent({ hubConnection, onConnected }: ChatCompon
 
   function deleteChannel(channel: Channel) {
     // TODO: Ajouter un invoke pour supprimer un canal
+    hubConnection?.invoke('DeleteChannel', channel.id);
   }
 
   function leaveChannel() {
