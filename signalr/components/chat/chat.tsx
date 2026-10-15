@@ -36,7 +36,9 @@ export default function ChatComponent({ hubConnection, onConnected }: ChatCompon
     });
 
     // TODO: Écouter le message pour mettre à jour la liste de channels
-
+    hubConnection.on('ChannelsList', (channels: Channel[]) => {
+      setChannelsList(channels);
+    })
     // TODO: Écouter le message pour quitter un channel (lorsque le channel est effacé)
 
     // Tous les handlers sont enregistrés : on peut maintenant démarrer la connexion.
@@ -53,6 +55,7 @@ export default function ChatComponent({ hubConnection, onConnected }: ChatCompon
     return () => {
       hubConnection.off('UsersList');
       hubConnection.off('NewMessage');
+      hubConnection.off('ChannelsList');
     };
   }, [hubConnection, onConnected]);
 
@@ -84,6 +87,7 @@ export default function ChatComponent({ hubConnection, onConnected }: ChatCompon
   function createChannel(e: React.FormEvent) {
     e.preventDefault();
     // TODO: Ajouter un invoke pour créer un canal
+    hubConnection?.invoke('CreateChannel', newChannelName);
     setNewChannelName('');
   }
 
