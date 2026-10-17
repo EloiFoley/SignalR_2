@@ -109,13 +109,17 @@ namespace signalr.backend.Hubs
             // TODO: Faire quitter le vieux canal à l'utilisateur
             if (oldChannelId > 0)
             {
+                string oldGroup = CreateChannelGroupName(oldChannelId);
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, CreateChannelGroupName(oldChannelId));
+                await Clients.Group(oldGroup).SendAsync("NewMessage", userTag + " a quitté le canal");
             }
 
             // TODO: Faire joindre le nouveau canal à l'utilisateur
             if (newChannelId > 0)
             {
+                string newGroup = CreateChannelGroupName(newChannelId);
                 await Groups.AddToGroupAsync(Context.ConnectionId, CreateChannelGroupName(newChannelId));
+                await Clients.Group(newGroup).SendAsync("NewMessage", userTag + " a rejoint le canal");
             }
         }
 
@@ -124,6 +128,9 @@ namespace signalr.backend.Hubs
             if (userId != null)
             {
                 // TODO: Envoyer le message à cet utilisateur
+                string tag = "[De: " + CurentUser.UserName + "] ";
+                await Clients.User(userId).SendAsync("NewMessage", tag + message);
+                await Clients.Caller.SendAsync("NewMessage", tag + message);
                 
             }
             else if (channelId != 0)
