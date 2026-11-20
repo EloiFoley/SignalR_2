@@ -84,7 +84,7 @@ namespace signalr.backend.Hubs
             await _context.SaveChangesAsync();
 
             // TODO: Envoyer un message aux clients pour les mettre à jour
-            await Clients.All.SendAsync("ChannelsList", _context.Channel.ToList());
+            await Clients.All.SendAsync("ChannelsList", await _context.Channel.ToListAsync());
         }
 
         public async Task DeleteChannel(int channelId)
@@ -139,6 +139,8 @@ namespace signalr.backend.Hubs
                 Channel channel = _context.Channel.Find(channelId)!;
                 string groupName = CreateChannelGroupName(channelId);
                 await Clients.Group(groupName).SendAsync("NewMessage", "[" + channel.Title + "] " + message);
+                channel.NbMessages++;
+                await _context.SaveChangesAsync();
             }
             else
             {
@@ -146,7 +148,7 @@ namespace signalr.backend.Hubs
             }
         }
 
-        private static string CreateChannelGroupName(int channelId)
+        public static string CreateChannelGroupName(int channelId)
         {
             return "Channel" + channelId;
         }

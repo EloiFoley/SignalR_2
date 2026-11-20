@@ -6,5 +6,6 @@ namespace signalr.backend.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
+        public int NbMessages { get; set; }
     }
 }

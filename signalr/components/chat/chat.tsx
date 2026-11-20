@@ -44,6 +44,10 @@ export default function ChatComponent({ hubConnection, onConnected }: ChatCompon
       setSelectedChannel(null);
       setMessages(prev => [...prev, "Le canal a été supprimé, vous l'avez quitté."]);
     });
+
+    hubConnection.on('MostPopularChannel', (messageCount) => {
+      alert(`Vous êtes dans le canal le plus populaire avec ${messageCount} messages`)
+    })
     // Tous les handlers sont enregistrés : on peut maintenant démarrer la connexion.
     if (hubConnection.state === HubConnectionState.Disconnected) {
       hubConnection

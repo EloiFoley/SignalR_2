@@ -17,7 +17,7 @@ namespace signalr.backend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.16")
+                .HasAnnotation("ProductVersion", "10.0.11")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -232,6 +232,9 @@ namespace signalr.backend.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("NbMessages")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -244,16 +247,19 @@ namespace signalr.backend.Migrations
                         new
                         {
                             Id = 1,
+                            NbMessages = 0,
                             Title = "Channel 1"
                         },
                         new
                         {
                             Id = 2,
+                            NbMessages = 0,
                             Title = "Channel 2"
                         },
                         new
                         {
                             Id = 3,
+                            NbMessages = 0,
                             Title = "Channel 3"
                         });
                 });
